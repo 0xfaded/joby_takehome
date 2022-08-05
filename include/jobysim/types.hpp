@@ -6,7 +6,8 @@
 
 namespace jobysim {
 
-using duration_t = std::chrono::duration<uint64_t>;
+using duration_t = std::chrono::microseconds;
+using hours_t = std::chrono::duration<double, std::ratio<3600>>;
 
 } // namespace jobysim
 

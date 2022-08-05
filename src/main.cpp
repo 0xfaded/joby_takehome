@@ -1,17 +1,20 @@
 #include <chrono>
 
 #include <jobysim/types.hpp>
-#include <jobysim/actor.hpp>
 #include <jobysim/sim_visitor.hpp>
 
+#include <jobysim/actors/aircraft.hpp>
+#include <jobysim/aircraft/spec.hpp>
+
 using namespace jobysim;
+using namespace jobysim::actors;
 
 int main(int argc, char **argv) {
   using namespace std::chrono_literals;
 
-  Actor actor;
+  Aircraft aircraft(aircraft::BravoCompany);
   SimVisitor visitor;
 
-  visitor.advance(actor, 1s);
+  visitor.advance(aircraft, 1s);
   return 0;
 }

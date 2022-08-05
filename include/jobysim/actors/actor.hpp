@@ -1,5 +1,5 @@
-#ifndef JOBYSIM_ACTOR_HPP
-#define JOBYSIM_ACTOR_HPP
+#ifndef JOBYSIM_ACTORS_ACTOR_HPP
+#define JOBYSIM_ACTORS_ACTOR_HPP
 
 #include <vector>
 #include <memory>
@@ -7,14 +7,15 @@
 #include <jobysim/types.hpp>
 
 namespace jobysim {
+namespace actors {
 
 class Actor {
  public:
-  virtual ~Actor();
+  virtual ~Actor() {}
 
-  virtual void pre_advance() {};
-  virtual void advance(duration_t t) {};
-  virtual void post_advance() {};
+  virtual void pre_advance() {}
+  virtual void advance(duration_t t) {}
+  virtual void post_advance() {}
 
   const std::vector<std::shared_ptr<Actor>> &children() const {
     return children_;
@@ -36,6 +37,7 @@ class Actor {
   std::vector<std::shared_ptr<Actor>> children_;
 };
 
+} // namespace actors
 } // namespace jobysim
 
-#endif // JOBYSIM_ACTOR_HPP
+#endif // JOBYSIM_ACTORS_ACTOR_HPP

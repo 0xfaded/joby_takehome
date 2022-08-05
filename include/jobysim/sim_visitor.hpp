@@ -4,12 +4,13 @@
 #include <functional>
 
 #include <jobysim/types.hpp>
-#include <jobysim/actor.hpp>
+#include <jobysim/actors/actor.hpp>
 
 namespace jobysim {
 
 class SimVisitor {
  public:
+  using Actor = actors::Actor;
 
   void pre_advance(Actor &actor) const {
     recurse(actor, [](Actor &actor) { actor.pre_advance(); });
