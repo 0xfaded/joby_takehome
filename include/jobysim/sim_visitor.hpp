@@ -13,21 +13,28 @@ class SimVisitor {
   using Actor = actors::Actor;
 
   void pre_advance(Actor &actor) const {
-    recurse(actor, [](Actor &actor) { actor.pre_advance(); });
+    recurse_before(actor, [](Actor &actor) { actor.pre_advance(); });
   }
 
   void advance(Actor &actor, duration_t t) const {
-    recurse(actor, [t](Actor &actor) { actor.advance(t); });
+    recurse_after(actor, [t](Actor &actor) { actor.advance(t); });
   }
 
-  void post_advance(Actor &actor, duration_t t) const {
-    recurse(actor, [](Actor &actor) { actor.post_advance(); });
+  void post_advance(Actor &actor) const {
+    recurse_after(actor, [](Actor &actor) { actor.post_advance(); });
   }
 
  private:
-  void recurse(Actor &actor, const std::function<void(Actor &actor)> &fn) const {
+  void recurse_before(Actor &actor, const std::function<void(Actor &actor)> &fn) const {
+    fn(actor);
     for (auto &child : actor.children()) {
-      recurse(*child, fn);
+      recurse_before(*child, fn);
+    }
+  }
+
+  void recurse_after(Actor &actor, const std::function<void(Actor &actor)> &fn) const {
+    for (auto &child : actor.children()) {
+      recurse_after(*child, fn);
     }
     fn(actor);
   }

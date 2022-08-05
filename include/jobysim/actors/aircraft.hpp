@@ -42,6 +42,7 @@ class Aircraft : public Actor {
 
   void transition_discharged() { transition(State::Discharged); }
   void transition_charging() { transition(State::Charging); }
+  void transition_charged() { transition(State::Charged); }
   void transition_moving() { transition(State::Moving); }
 
  private:

@@ -1,7 +1,9 @@
 #include <jobysim/actors/aircraft.hpp>
 
 #include <stdexcept>
+
 #include <iostream>
+#include <map>
 
 namespace jobysim {
 namespace actors {
@@ -38,22 +40,24 @@ void Aircraft::advance(duration_t t) {
 }
 
 void Aircraft::post_advance() {
-  if (energy_ <= 0.0) {
-    if (state_ != State::Moving) {
-      throw std::runtime_error("vehicle discharged while not moving");
-    }
+  if ((state_ == State::Moving) && (energy_ <= 0.0)) {
     energy_ = 0.0;
-    transition(State::Discharged);
-  } else if (energy_ >= spec_.capacity_kwh) {
-    if (state_ != State::Moving) {
-      throw std::runtime_error("vehicle energy increased while not charging");
-    }
+    transition_discharged();
+  } else if ((state_ == State::Charging) && (energy_ >= spec_.capacity_kwh)) {
     energy_ = spec_.capacity_kwh;
-    transition(State::Charging);
+    transition_charged();
   }
 }
 
 void Aircraft::transition(State state) {
+  static std::map<State, std::string> names {
+    { State::Moving, "Moving" },
+    { State::Discharged, "Discharged" },
+    { State::Charging, "Charging" },
+    { State::Charged, "Charged" } };
+
+  std::cout << static_cast<void*>(this) << " " << names[state_] << " -> " << names[state] << "\n";
+
   if (state == State::Moving && state_ != State::Charged) {
     throw std::runtime_error("invalid state transition to moving");
   } else if (state == State::Discharged && state_ != State::Moving) {
