@@ -10,19 +10,13 @@ namespace actors {
 
 using std::chrono::duration_cast;
 
-Aircraft::Aircraft(const aircraft::Spec &spec, int seed)
+Aircraft::Aircraft(const aircraft::Spec &spec, unsigned long seed)
   : spec_{spec},
     state_{State::Moving},
     energy_{spec.capacity_kwh},
     distance_{0.0},
-    has_fault_{false},
+    num_faults_{0},
     rng_(seed) {
-}
-
-void Aircraft::pre_advance() {
-  if (has_fault_) {
-    throw std::runtime_error("precondition failed: aircraft fault_bit is set");
-  }
 }
 
 void Aircraft::advance(duration_t t) {
@@ -36,7 +30,7 @@ void Aircraft::advance(duration_t t) {
   }
 
   // TODO[carl]: Clarify if faults occur only while moving
-  has_fault_ = check_fault(h);
+  num_faults_ += check_faults(h);
 }
 
 void Aircraft::post_advance() {
@@ -53,16 +47,19 @@ void Aircraft::transition(State state) {
   static std::map<State, std::string> names {
     { State::Moving, "Moving" },
     { State::Discharged, "Discharged" },
+    { State::Waiting, "Waiting" },
     { State::Charging, "Charging" },
     { State::Charged, "Charged" } };
 
-  std::cout << static_cast<void*>(this) << " " << names[state_] << " -> " << names[state] << "\n";
+  std::cout << spec_.name << "(" << static_cast<void*>(this) << ") " << names[state_] << " -> " << names[state] << "\n";
 
   if (state == State::Moving && state_ != State::Charged) {
     throw std::runtime_error("invalid state transition to moving");
   } else if (state == State::Discharged && state_ != State::Moving) {
     throw std::runtime_error("invalid state transition to discharged");
-  } else if (state == State::Charging && state_ != State::Discharged) {
+  } else if (state == State::Waiting && state_ != State::Discharged) {
+    throw std::runtime_error("invalid state transition to waiting");
+  } else if (state == State::Charging && state_ != State::Waiting) {
     throw std::runtime_error("invalid state transition to charging");
   } else if (state == State::Charged && state_ != State::Charging) {
     throw std::runtime_error("invalid state transition charged");
@@ -70,15 +67,9 @@ void Aircraft::transition(State state) {
   state_ = state;
 }
 
-bool Aircraft::clear_fault() {
-  bool fault = has_fault_;
-  has_fault_ = false;
-  return fault;
-}
-
-bool Aircraft::check_fault(double h) {
+int Aircraft::check_faults(double h) {
   std::poisson_distribution p(spec_.fault_prob_per_hour * h);
-  return p(rng_) >= 1;
+  return p(rng_);
 }
 
 } // namespace actors

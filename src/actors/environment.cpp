@@ -19,15 +19,12 @@ void Environment::add_aircraft(const std::shared_ptr<Aircraft> &aircraft) {
 
 void Environment::pre_advance() {
   // during pre_advance, we may only modify state
-  // of the actors below us in hierarchy, not our state.
+  // of the actors below (and right) of us in hierarchy,
+  // not our own state. Charger assignment happens in post_advance.
   for (auto &aircraft: chargers_) {
-    if (aircraft && aircraft->state() == Aircraft::State::Discharged) {
+    if (aircraft && aircraft->state() == Aircraft::State::Waiting) {
       aircraft->transition_charging();
     }
-  }
-
-  for (auto &aircraft : aircrafts_) {
-    aircraft->clear_fault();
   }
 }
 
@@ -36,6 +33,7 @@ void Environment::post_advance() {
   for (auto &aircraft : aircrafts_) {
     if (aircraft->state() == Aircraft::State::Discharged) {
       charger_queue_.push(aircraft);
+      aircraft->transition_waiting();
     }
   }
 
