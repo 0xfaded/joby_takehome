@@ -6,15 +6,24 @@
 
 namespace jobysim {
 
+/// Executor which drives the simulation.
 class SimExecutor {
  public:
   using Actor = actors::Actor;
 
+  /// Constructor
+  /// @param root The actor to simulate.
+  /// @param tick The duration advanced in each call to advance()
+  /// @param wallclock_tick_duration The wallclock time that each tick should
+  ///                                pass achieved by the executor sleeping.
+  ///                                Zero duration will avoid calls to sleep().
   SimExecutor(
       const std::shared_ptr<Actor>& root,
       duration_t tick,
       duration_t wallclock_tick_duration);
 
+  /// Execute a simulation of length sim_duration
+  /// @param sim_duration The total duration of the simulation.
   void execute(duration_t sim_duration);
 
  private:

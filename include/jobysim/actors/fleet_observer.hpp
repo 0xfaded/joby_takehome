@@ -12,6 +12,8 @@
 namespace jobysim {
 namespace actors {
 
+/// Observer which monitors how much time is spent in each state by
+/// observed aircraft.
 class FleetObserver : public Observer {
  public:
   FleetObserver();
@@ -19,9 +21,14 @@ class FleetObserver : public Observer {
 
   void advance(duration_t t) override;
 
+  /// Add an aircraft to observe. Aircraft does not become a child actor.
+  /// @param aircraft   aircraft to observe.
   void observe_aircraft(const std::shared_ptr<Aircraft> &aircraft);
+
+  /// Return the number of aircraft being observed.
   int num_aircraft() const { return static_cast<int>(aircraft_.size()); }
 
+  /// Compute and return a FleetStatstics from the observed aircraft.
   FleetStatistics compute_statistics() const;
 
  private:

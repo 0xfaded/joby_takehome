@@ -10,6 +10,7 @@ namespace jobysim {
 using duration_t = std::chrono::nanoseconds;
 using hours_t = std::chrono::duration<double, std::ratio<3600>>;
 
+/// Statistics computed by simulation interface
 struct FleetStatistics {
   duration_t average_time_in_flight;
   duration_t average_time_charging;

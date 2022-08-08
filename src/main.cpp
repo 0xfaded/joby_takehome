@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     int num_aircraft = fleet_obs.second->num_aircraft();
     auto stats = fleet_obs.second->compute_statistics();
 
-    std::cout << fleet_obs.first << "(" << num_aircraft << "):\n" << stats << "\n";
+    std::cout << fleet_obs.first << "(num=" << num_aircraft << "):\n" << stats << "\n";
   }
 
   return 0;
