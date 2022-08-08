@@ -50,5 +50,12 @@ void Environment::post_advance() {
   }
 }
 
+int Environment::free_chargers() const {
+  return std::accumulate(chargers_.begin(), chargers_.end(), 0,
+      [](int n, auto &charger) {
+        return n + (charger ? 0 : 1);
+      });
+}
+
 } // namespace actors
 } // namespace jobysim

@@ -44,6 +44,7 @@ class Aircraft : public Actor {
 
   State state() const { return state_; }
   double distance() const { return distance_; };
+  double energy() const { return energy_; };
   int num_faults() const { return num_faults_; };
   const aircraft::Spec& spec() const { return spec_; };
 

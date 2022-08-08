@@ -24,6 +24,9 @@ class Environment : public Actor {
   void pre_advance() override;
   void post_advance() override;
 
+  int queue_length() const { return static_cast<int>(charger_queue_.size()); }
+  int free_chargers() const;
+
  private:
   std::vector<std::shared_ptr<Aircraft>> aircrafts_;
   std::vector<std::shared_ptr<Aircraft>> chargers_;
