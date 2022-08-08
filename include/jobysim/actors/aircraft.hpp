@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <random>
+#include <stdexcept>
 
 #include <jobysim/types.hpp>
 #include <jobysim/actors/actor.hpp>
@@ -16,8 +17,10 @@ class Aircraft : public Actor {
  public:
   // simple state machine.
   // moving -> discharged
-  // discharged -> charging
-  // charging -> moving
+  // discharged -> waiting
+  // waiting -> charging
+  // charging -> charged
+  // charged -> moving
   //
   // other transitions invalid
   enum class State {
@@ -26,6 +29,9 @@ class Aircraft : public Actor {
     Waiting,
     Charging,
     Charged,
+  };
+  struct BadStateTransition : public std::logic_error {
+    BadStateTransition(const std::string &what_arg) : std::logic_error(what_arg) {}
   };
 
   explicit Aircraft(
@@ -41,14 +47,13 @@ class Aircraft : public Actor {
   int num_faults() const { return num_faults_; };
   const aircraft::Spec& spec() const { return spec_; };
 
+  void transition_discharged() { transition(State::Discharged); }
   void transition_waiting() { transition(State::Waiting); }
   void transition_charging() { transition(State::Charging); }
+  void transition_charged() { transition(State::Charged); }
   void transition_moving() { transition(State::Moving); }
 
  private:
-  void transition_discharged() { transition(State::Discharged); }
-  void transition_charged() { transition(State::Charged); }
-
   void transition(State state);
   int check_faults(double h);
 

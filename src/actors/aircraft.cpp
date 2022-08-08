@@ -1,7 +1,5 @@
 #include <jobysim/actors/aircraft.hpp>
 
-#include <stdexcept>
-
 #include <iostream>
 #include <map>
 
@@ -44,25 +42,16 @@ void Aircraft::post_advance() {
 }
 
 void Aircraft::transition(State state) {
-  static std::map<State, std::string> names {
-    { State::Moving, "Moving" },
-    { State::Discharged, "Discharged" },
-    { State::Waiting, "Waiting" },
-    { State::Charging, "Charging" },
-    { State::Charged, "Charged" } };
-
-  std::cout << spec_.name << "(" << static_cast<void*>(this) << ") " << names[state_] << " -> " << names[state] << "\n";
-
   if (state == State::Moving && state_ != State::Charged) {
-    throw std::runtime_error("invalid state transition to moving");
+    throw BadStateTransition("invalid state transition to moving");
   } else if (state == State::Discharged && state_ != State::Moving) {
-    throw std::runtime_error("invalid state transition to discharged");
+    throw BadStateTransition("invalid state transition to discharged");
   } else if (state == State::Waiting && state_ != State::Discharged) {
-    throw std::runtime_error("invalid state transition to waiting");
+    throw BadStateTransition("invalid state transition to waiting");
   } else if (state == State::Charging && state_ != State::Waiting) {
-    throw std::runtime_error("invalid state transition to charging");
+    throw BadStateTransition("invalid state transition to charging");
   } else if (state == State::Charged && state_ != State::Charging) {
-    throw std::runtime_error("invalid state transition charged");
+    throw BadStateTransition("invalid state transition charged");
   }
   state_ = state;
 }

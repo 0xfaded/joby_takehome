@@ -1,0 +1,2 @@
+joby_test(aircraft)
+

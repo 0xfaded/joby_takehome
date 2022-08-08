@@ -8,13 +8,24 @@ set(JOBYSIM_SRCS
 
   "aircraft/spec.cpp")
 
+# libjobysim
 add_library(jobysim SHARED ${JOBYSIM_SRCS})
-
-# stand alone executable, this is not a library (yet)
 target_include_directories(jobysim PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
-
+# driver executable
 add_executable(jobysim_driver "main.cpp")
 target_link_libraries(jobysim_driver jobysim)
 set_target_properties(jobysim_driver PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+
+# tests
+include(GoogleTest)
+
+function(JOBY_TEST NAME)
+  add_executable(${NAME}_test ${NAME}_test.cpp)
+  target_link_libraries(${NAME}_test PRIVATE jobysim GTest::gtest_main)
+  gtest_discover_tests(${NAME}_test)
+endfunction()
+
+add_subdirectory(actors)

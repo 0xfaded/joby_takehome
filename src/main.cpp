@@ -13,14 +13,14 @@ int main(int argc, char **argv) {
   using namespace std::chrono_literals;
 
   SimBuilder builder(20, 3, aircraft::all_companies);
-  auto [root, fleet_observers] = builder.build();
+  auto [sim_root, fleet_observers] = builder.build();
 
   SimVisitor visitor;
 
   for (int i = 0; i < 36000*3; i += 1) {
-    visitor.pre_advance(*root);
-    visitor.advance(*root, 1s);
-    visitor.post_advance(*root);
+    visitor.pre_advance(*sim_root);
+    visitor.advance(*sim_root, 1s);
+    visitor.post_advance(*sim_root);
   }
 
   for (auto fleet_obs : fleet_observers) {

@@ -38,7 +38,7 @@ SimObsMap SimBuilder::build() {
   for (int i = 0; i < num_aircraft_; i += 1) {
     size_t spec_i {spec_i_dist(rng_)};
 
-    auto &spec = aircraft_specs_[spec_i];
+    auto &spec = aircraft_specs_.at(spec_i);
     auto aircraft = std::make_shared<Aircraft>(spec, rng_());
 
     environment->add_aircraft(aircraft);
