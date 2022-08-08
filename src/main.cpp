@@ -1,27 +1,24 @@
 #include <chrono>
 #include <iostream>
 
-#include <jobysim/types.hpp>
-#include <jobysim/sim_visitor.hpp>
-
-#include <jobysim/sim_builder.hpp>
+#include <jobysim/sim.hpp>
 
 using namespace jobysim;
-using namespace jobysim::actors;
 
 int main(int argc, char **argv) {
   using namespace std::chrono_literals;
 
-  SimBuilder builder(20, 3, aircraft::all_companies);
+  constexpr int num_aircraft = 20;
+  constexpr int num_chargers = 3;
+  constexpr duration_t sim_duration = 3h;
+  constexpr duration_t sim_tick = 1s;
+  constexpr duration_t wallclock_tick = sim_tick / 3600;
+
+  SimBuilder builder(num_aircraft, num_chargers, aircraft::all_companies);
   auto [sim_root, fleet_observers] = builder.build();
 
-  SimVisitor visitor;
-
-  for (int i = 0; i < 36000*3; i += 1) {
-    visitor.pre_advance(*sim_root);
-    visitor.advance(*sim_root, 1s);
-    visitor.post_advance(*sim_root);
-  }
+  SimExecutor executor{sim_root, sim_tick, wallclock_tick};
+  executor.execute(sim_duration);
 
   for (auto fleet_obs : fleet_observers) {
     int num_aircraft = fleet_obs.second->num_aircraft();

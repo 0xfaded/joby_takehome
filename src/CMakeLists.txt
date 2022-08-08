@@ -1,5 +1,6 @@
 set(JOBYSIM_SRCS
   "sim_builder.cpp"
+  "sim_executor.cpp"
 
   "actors/aircraft.cpp"
   "actors/environment.cpp"

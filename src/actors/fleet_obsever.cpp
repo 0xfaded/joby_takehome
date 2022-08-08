@@ -5,13 +5,14 @@ namespace actors {
 
 FleetObserver::FleetObserver() {
   using namespace std::chrono_literals;
+  using State = Aircraft::State;
 
   // initialize the keys required by compute_statistics()
   // with sentinel values.
   aggregate_state_durations_ = {
-    { Aircraft::State::Moving, 0s },
-    { Aircraft::State::Charging, 0s },
-    { Aircraft::State::Discharged, 0s }
+    { State::Moving, 0s },
+    { State::Charging, 0s },
+    { State::Discharged, 0s }
   };
 }
 
@@ -26,13 +27,15 @@ void FleetObserver::observe_aircraft(const std::shared_ptr<Aircraft> &aircraft) 
 }
 
 FleetStatistics FleetObserver::compute_statistics() const {
+  using State = Aircraft::State;
+
   if (aircraft_.empty()) {
     return FleetStatistics{};
   }
 
-  duration_t total_time_in_flight = aggregate_state_durations_.at(Aircraft::State::Moving);
-  duration_t total_time_charging = aggregate_state_durations_.at(Aircraft::State::Charging);
-  duration_t total_time_waiting_to_charge = aggregate_state_durations_.at(Aircraft::State::Waiting);
+  duration_t total_time_in_flight = aggregate_state_durations_.at(State::Moving);
+  duration_t total_time_charging = aggregate_state_durations_.at(State::Charging);
+  duration_t total_time_waiting_to_charge = aggregate_state_durations_.at(State::Waiting);
 
   double total_passenger_miles = std::accumulate(aircraft_.begin(), aircraft_.end(), 0.0,
       [](double sum, const auto& aircraft) {
