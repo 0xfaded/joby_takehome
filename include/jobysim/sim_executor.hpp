@@ -20,7 +20,7 @@ class SimExecutor {
   SimExecutor(
       const std::shared_ptr<Actor>& root,
       duration_t tick,
-      duration_t wallclock_tick_duration);
+      duration_t wallclock_tick_duration = duration_t{0});
 
   /// Execute a simulation of length sim_duration
   /// @param sim_duration The total duration of the simulation.

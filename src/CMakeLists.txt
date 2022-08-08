@@ -30,3 +30,5 @@ function(JOBY_TEST NAME)
 endfunction()
 
 add_subdirectory(actors)
+
+joby_test(integration)

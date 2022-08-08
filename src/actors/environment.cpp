@@ -2,7 +2,6 @@
 #include <jobysim/actors/environment.hpp>
 
 #include <stdexcept>
-#include <iostream>
 
 namespace jobysim {
 namespace actors {

@@ -12,7 +12,7 @@ FleetObserver::FleetObserver() {
   aggregate_state_durations_ = {
     { State::Moving, 0s },
     { State::Charging, 0s },
-    { State::Discharged, 0s }
+    { State::Waiting, 0s }
   };
 }
 
